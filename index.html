@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Heladería artesanal Fruti Fruti. Helados deliciosos de açaí, chocolate, frutilla y coco desde 1998.">
+    <title>Heladería Fruti Fruti</title>
+    <link rel="stylesheet" href="estilos.css">
+  </head>
+  <body>
+
+    <!-- ── HEADER: identidad y navegación principal ────────────────────── -->
+    <header>
+      <div class="cabecera-marca">
+        <h1>Heladería Fruti Fruti</h1>
+        <p>Helado artesanal del barrio desde 1998</p>
+      </div>
+      <nav>
+        <ul>
+          <li><a href="#productos">Productos</a></li>
+          <li><a href="#horarios">Horarios y Precios</a></li>
+          <li><a href="#pedido">Hacer un pedido</a></li>
+        </ul>
+      </nav>
+    </header>
+
+    <!-- ── MAIN: el contenido propio de esta página ────────────────────── -->
+    <main>
+
+      <!-- ── SECCIÓN DE PRODUCTOS INTERACTIVA ─────────────────────────── -->
+      <section id="productos">
+        <h2>Nuestros productos</h2>
+
+        <!-- Controles para el módulo de eventos (buscador y filtros) -->
+        <div class="panel-controles">
+          <div class="campo-buscador">
+            <label for="buscador" class="sr-only">Buscar helados</label>
+            <input type="search" id="buscador" placeholder="🔍 Buscar helado por sabor (ej. chocolate, frutilla)..." autocomplete="off">
+          </div>
+
+          <div id="filtros" class="grupo-filtros" role="group" aria-label="Filtrar por categoría">
+            <button type="button" class="activo" data-categoria="todos">Todos</button>
+            <button type="button" data-categoria="frutales">Frutales</button>
+            <button type="button" data-categoria="cremosos">Cremosos</button>
+            <button type="button" data-categoria="especiales">Especiales</button>
+          </div>
+        </div>
+
+        <!-- Contador dinámico de resultados -->
+        <p id="resultado" aria-live="polite">Cargando catálogo de helados...</p>
+
+        <!-- Contenedor dinámico llenado por render.js -->
+        <div id="lista-productos"></div>
+      </section>
+
+      <!-- ── TABLA DE PRECIOS Y FOTO ───────────────────────────────────── -->
+      <section id="horarios">
+        <h2>Horarios y precios</h2>
+
+        <table>
+          <caption>Precios por porción y disponibilidad</caption>
+          <thead>
+            <tr>
+              <th scope="col">Producto</th>
+              <th scope="col">Precio</th>
+              <th scope="col">Disponible</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr><td>Helado de Chocolate</td>   <td>Bs 25.00</td>  <td>Todos los días</td></tr>
+            <tr><td>Helado de Açaí</td>        <td>Bs 35.00</td>  <td>Todos los días</td></tr>
+            <tr><td>Helado de Frutilla</td>    <td>Bs 25.00</td>  <td>Todos los días</td></tr>
+            <tr><td>Helado de Coco</td>        <td>Bs 20.00</td>  <td>Sujeto a temporada</td></tr>
+          </tbody>
+        </table>
+
+        <!-- ── FIGURE e IMG ──────────────────────────────────────────── -->
+        <figure>
+          <img src="heladeria fruti fruti.jpg"
+               alt="Heladería Fruti Fruti, deliciosos helados artesanales y ambiente familiar"
+               width="600" height="400">
+          <figcaption>Nuestra heladería artesanal abierta de martes a domingo.</figcaption>
+        </figure>
+      </section>
+
+      <!-- ── FORMULARIO ACCESIBLE CON EVENTOS ──────────────────────────── -->
+      <section id="pedido">
+        <h2>Hacer un pedido</h2>
+
+        <!-- Contenedor de confirmación de pedido -->
+        <div id="mensaje-pedido" class="mensaje-pedido" role="alert" style="display: none;"></div>
+
+        <form action="/pedido" method="post" novalidate>
+
+          <fieldset>
+            <legend>Tus datos</legend>
+
+            <p>
+              <label for="nombre">Nombre completo</label>
+              <input type="text" id="nombre" name="nombre"
+                     autocomplete="name" placeholder="Ej. Ana Pérez" required>
+            </p>
+
+            <p>
+              <label for="email">Correo electrónico</label>
+              <input type="email" id="email" name="email"
+                     autocomplete="email" placeholder="ejemplo@correo.com" required>
+            </p>
+
+            <p>
+              <label for="telefono">Teléfono / WhatsApp</label>
+              <input type="tel" id="telefono" name="telefono"
+                     autocomplete="tel" pattern="[0-9]{7,8}"
+                     title="7 u 8 dígitos, sin espacios"
+                     placeholder="Ej. 70123456" required>
+            </p>
+          </fieldset>
+
+          <fieldset>
+            <legend>Tu pedido</legend>
+
+            <p>
+              <label for="producto">Producto</label>
+              <select id="producto" name="producto" required>
+                <option value="">Elige un helado</option>
+                <option value="Helado de Chocolate">Helado de Chocolate (Bs 25.00)</option>
+                <option value="Helado de Açaí">Helado de Açaí (Bs 35.00)</option>
+                <option value="Helado de Frutilla">Helado de Frutilla (Bs 25.00)</option>
+                <option value="Helado de Coco">Helado de Coco (Bs 20.00 - Agotado)</option>
+              </select>
+            </p>
+
+            <p>
+              <label for="cantidad">Cantidad de porciones</label>
+              <input type="number" id="cantidad" name="cantidad"
+                     min="1" max="50" value="1" required>
+            </p>
+
+            <!-- Resumen en tiempo real del costo -->
+            <div class="calculo-total">
+              <span>Total estimado:</span>
+              <strong id="total-estimado">Bs 0.00</strong>
+            </div>
+
+            <p>
+              <label for="fecha">Fecha de entrega / recojo</label>
+              <input type="date" id="fecha" name="fecha" required>
+            </p>
+
+            <p>
+              <label for="notas">Alguna indicación especial (opcional)</label>
+              <textarea id="notas" name="notas" rows="3" placeholder="Ej. Por favor enviar servilletas y cucharas extra..."></textarea>
+            </p>
+
+            <p class="fila-checkbox">
+              <input type="checkbox" id="terminos" name="terminos" required>
+              <label for="terminos">Acepto que el pedido se confirma por teléfono o WhatsApp</label>
+            </p>
+          </fieldset>
+
+          <button type="submit" id="btn-enviar">Enviar pedido</button>
+        </form>
+      </section>
+
+    </main>
+
+    <aside>
+      <h2>¿Sabías?</h2>
+      <p>Preparamos nuestros helados diariamente utilizando pulpa 100% natural de açaí, fruta fresca seleccionada y leche local, garantizando la textura más suave y cremosa.</p>
+    </aside>
+
+    <footer>
+      <h2>Dónde estamos</h2>
+      <address>
+        Av. Principal 145<br>
+        Teléfono: 70123456
+      </address>
+      <p><small>&copy; 2026 Heladería Fruti Fruti - Todos los derechos reservados</small></p>
+    </footer>
+
+    <!-- Scripts en orden de dependencia -->
+    <script src="datos.js"></script>
+    <script src="funciones.js"></script>
+    <script src="render.js"></script>
+    <script src="app.js"></script>
+    <script src="eventos.js"></script>
+
+  </body>
+</html>
+
