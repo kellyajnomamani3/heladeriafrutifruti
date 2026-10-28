@@ -36,7 +36,14 @@ function actualizar() {
 
   render(visibles);
 
-  resultado.textContent = `${visibles.length} de ${productos.length} helados disponibles`;
+  const cantDisponibles = visibles.filter(p => p.disponible).length;
+  if (visibles.length === 0) {
+    resultado.textContent = "0 helados encontrados con ese criterio";
+  } else if (visibles.length === productos.length) {
+    resultado.textContent = `${visibles.length} de ${productos.length} helados en catálogo (${cantDisponibles} disponibles)`;
+  } else {
+    resultado.textContent = `${visibles.length} helados encontrados (${cantDisponibles} disponibles)`;
+  }
 }
 
 // Pintar catálogo inicial
@@ -111,6 +118,11 @@ function calcularPrecioEstimado() {
     ? productos.find(p => p.nombre === nombreSeleccionado)
     : null;
 
+  if (producto && !producto.disponible) {
+    totalEstimado.textContent = "Agotado";
+    return;
+  }
+
   if (producto && cantidad > 0) {
     const total = (typeof calcularTotal === "function")
       ? calcularTotal(producto.precio, cantidad)
@@ -141,11 +153,19 @@ console.log("70123456 válido:", PATRONES.telefono.test("70123456"));
 console.log("7012 válido:", PATRONES.telefono.test("7012"));
 console.log("ana@correo.bo válido:", PATRONES.correo.test("ana@correo.bo"));
 
-// Configurar fecha mínima de entrega a hoy
-const hoy = new Date().toISOString().slice(0, 10);
+// Configurar fecha mínima de entrega a hoy (en hora local para evitar desfases UTC)
+const ahora = new Date();
+const anio = ahora.getFullYear();
+const mes = String(ahora.getMonth() + 1).padStart(2, "0");
+const dia = String(ahora.getDate()).padStart(2, "0");
+const hoy = `${anio}-${mes}-${dia}`;
+
 if (inputFecha) {
   inputFecha.min = hoy;
   inputFecha.value = hoy;
+  const limpiarErrorFecha = () => inputFecha.setCustomValidity("");
+  inputFecha.addEventListener("input", limpiarErrorFecha);
+  inputFecha.addEventListener("change", limpiarErrorFecha);
 }
 
 // Validación reactiva de teléfono
@@ -186,40 +206,65 @@ if (formulario) {
 
     // Validación de fecha no anterior a hoy
     const fecha = formulario.querySelector("#fecha");
-    if (fecha && fecha.value < hoy) {
-      fecha.setCustomValidity("La fecha de entrega no puede ser anterior al día de hoy.");
-      fecha.reportValidity();
-      fecha.addEventListener("input", () => fecha.setCustomValidity(""), { once: true });
-      return;
+    if (fecha) {
+      if (fecha.value < hoy) {
+        fecha.setCustomValidity("La fecha de entrega no puede ser anterior al día de hoy.");
+        fecha.reportValidity();
+        return;
+      } else {
+        fecha.setCustomValidity("");
+      }
     }
 
     const datos = Object.fromEntries(new FormData(formulario));
-    const cantidadSolicitada = parseInt(datos.cantidad, 10) || 1;
+    const cantidadSolicitada = parseInt(datos.cantidad, 10);
+
+    if (isNaN(cantidadSolicitada) || cantidadSolicitada <= 0) {
+      alert("Por favor ingresa una cantidad válida de porciones (al menos 1).");
+      if (inputCantidad) inputCantidad.focus();
+      return;
+    }
 
     // Actualización de stock del producto en el catálogo
     const productoComprado = (typeof productos !== "undefined")
       ? productos.find(p => p.nombre === datos.producto)
       : null;
 
-    if (productoComprado) {
-      if (productoComprado.stock < cantidadSolicitada) {
-        alert(`Lo sentimos, solo quedan ${productoComprado.stock} unidades de ${productoComprado.nombre}.`);
-        return;
-      }
-
-      productoComprado.stock -= cantidadSolicitada;
-      if (productoComprado.stock <= 0) {
-        productoComprado.stock = 0;
-        productoComprado.disponible = false;
-      }
-
-      // Re-renderizamos para reflejar el nuevo stock y disponibilidad
-      actualizar();
+    if (!productoComprado) {
+      alert("Por favor elige un producto válido de la lista.");
+      if (selectProducto) selectProducto.focus();
+      return;
     }
 
-    const totalCalculado = productoComprado
-      ? (productoComprado.precio * cantidadSolicitada).toFixed(2)
-      : "0.00";
+    if (!productoComprado.disponible || productoComprado.stock <= 0) {
+      alert(`Lo sentimos, ${productoComprado.nombre} está actualmente agotado.`);
+      return;
+    }
+
+    if (productoComprado.stock < cantidadSolicitada) {
+      alert(`Lo sentimos, solo quedan ${productoComprado.stock} unidades de ${productoComprado.nombre}.`);
+      return;
+    }
+
+    productoComprado.stock -= cantidadSolicitada;
+    if (productoComprado.stock <= 0) {
+      productoComprado.stock = 0;
+      productoComprado.disponible = false;
+
+      // Sincronizar select si el producto se agota
+      if (selectProducto) {
+        const opcionAgotada = [...selectProducto.options].find(opt => opt.value === productoComprado.nombre);
+        if (opcionAgotada) {
+          opcionAgotada.disabled = true;
+          opcionAgotada.textContent = `${productoComprado.nombre} (Bs ${productoComprado.precio.toFixed(2)} - Agotado)`;
+        }
+      }
+    }
+
+    // Re-renderizamos para reflejar el nuevo stock y disponibilidad
+    actualizar();
+
+    const totalCalculado = (productoComprado.precio * cantidadSolicitada).toFixed(2);
 
     console.log("Pedido recibido con éxito:", datos);
 

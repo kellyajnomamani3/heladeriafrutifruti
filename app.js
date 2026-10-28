@@ -30,4 +30,7 @@ if (subtitulo) {
 }
 
 // ── LA PREGUNTA DEL DÍA ─────────────────────────────────────────────────
+// ¿Por qué "20" == precioHeladoBase es true y "20" === precioHeladoBase es false?
+// Respuesta: El operador == realiza coerción automática de tipos (convierte "20" a 20 antes de comparar).
+// En cambio, === es igualdad estricta y compara tanto el valor como el tipo de dato sin convertir.
 

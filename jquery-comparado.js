@@ -1,42 +1,61 @@
 // ── 1. COMPROBAR QUE CARGÓ ──────────────────────────────────────────────
-console.log("jQuery versión:", $.fn.jquery);
+if (typeof $ !== "undefined" && $.fn) {
+  console.log("jQuery versión:", $.fn.jquery);
+}
 
 // ── 2. ESPERAR AL DOM ───────────────────────────────────────────────────
 
 // ── 3. SELECCIONAR ──────────────────────────────────────────────────────
 const vanillaP = document.querySelector("#salida-vanilla");
-const jqueryP = $("#salida-jquery");
+const jqueryP = typeof $ !== "undefined" ? $("#salida-jquery") : [];
 
 console.log("vanilla es un elemento:", vanillaP instanceof HTMLElement);
-console.log("jQuery es una colección de", jqueryP.length);
+console.log("jQuery es una colección de", typeof jqueryP.length !== "undefined" ? jqueryP.length : 0);
 
-console.log("mismo elemento:", $(vanillaP)[0] === vanillaP);
+if (vanillaP && typeof $ !== "undefined" && $(vanillaP).length) {
+  console.log("mismo elemento:", $(vanillaP)[0] === vanillaP);
+}
 
 // ── 4. LEER Y ESCRIBIR CONTENIDO ────────────────────────────────────────
-vanillaP.textContent = "Cambiado con vanilla: document.querySelector + textContent";
-jqueryP.text("Cambiado con jQuery: $() + .text()");
+if (vanillaP) {
+  vanillaP.textContent = "Cambiado con vanilla: document.querySelector + textContent";
+}
+if (typeof $ !== "undefined" && jqueryP.length) {
+  jqueryP.text("Cambiado con jQuery: $() + .text()");
+}
 
 // ── 5. CLASES ───────────────────────────────────────────────────────────
 
 // ── 6. EVENTOS ──────────────────────────────────────────────────────────
-document.querySelector("#boton-vanilla").addEventListener("click", () => {
-  vanillaP.classList.toggle("resaltado");
-});
+const botonVanilla = document.querySelector("#boton-vanilla");
+if (botonVanilla && vanillaP) {
+  botonVanilla.addEventListener("click", () => {
+    vanillaP.classList.toggle("resaltado");
+  });
+}
 
-$("#boton-jquery").on("click", function () {
-  $(this).closest("section").find("#salida-jquery").toggleClass("resaltado");
-});
+if (typeof $ !== "undefined") {
+  $("#boton-jquery").on("click", function () {
+    $(this).closest("section").find("#salida-jquery").toggleClass("resaltado");
+  });
+}
 
 // ── 7. CHAINING ─────────────────────────────────────────────────────────
-$("#salida-jquery")
-  .addClass("destacado")
-  .attr("data-origen", "jquery")
-  .css("cursor", "pointer");
+if (typeof $ !== "undefined" && jqueryP.length) {
+  $("#salida-jquery")
+    .addClass("destacado")
+    .attr("data-origen", "jquery")
+    .css("cursor", "pointer");
+}
 
-vanillaP.classList.add("destacado");
-vanillaP.setAttribute("data-origen", "vanilla");
-vanillaP.style.cursor = "pointer";
+if (vanillaP) {
+  vanillaP.classList.add("destacado");
+  vanillaP.setAttribute("data-origen", "vanilla");
+  vanillaP.style.cursor = "pointer";
+}
 
 // ── 8. LA COMPARACIÓN QUE IMPORTA ───────────────────────────────────────
-console.log("Tarjetas que ve jQuery:", $(".tarjeta").length);
+if (typeof $ !== "undefined") {
+  console.log("Tarjetas que ve jQuery:", $(".tarjeta").length);
+}
 console.log("Tarjetas que ve vanilla:", document.querySelectorAll(".tarjeta").length);

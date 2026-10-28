@@ -9,8 +9,16 @@ const textosDeTitulos = [...titulos].map(t => t.textContent);
 console.log(textosDeTitulos);
 
 // ── 2. LEER Y MODIFICAR CONTENIDO ───────────────────────────────────────
+const primerH2 = document.querySelector("h2");
+if (primerH2) {
+  console.log("Primer título h2:", primerH2.textContent);
+}
 
 // ── 3. ATRIBUTOS Y CLASES ───────────────────────────────────────────────
+if (contenedor) {
+  contenedor.setAttribute("role", "region");
+  contenedor.setAttribute("aria-label", "Catálogo interactivo de helados");
+}
 
 // ── 4. CREAR ELEMENTOS ──────────────────────────────────────────────────
 function crearTarjeta(producto) {

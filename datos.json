@@ -1,0 +1,82 @@
+{
+  "negocio": {
+    "nombre": "Heladería Fruti Fruti",
+    "fundacion": 1998,
+    "ciudad": "La Paz",
+    "telefono": "70123456"
+  },
+  "productos": [
+    {
+      "id": 1,
+      "nombre": "Helado de Chocolate",
+      "precio": 25.0,
+      "unidad": "porción",
+      "stock": 25,
+      "disponible": true,
+      "categoria": "cremosos"
+    },
+    {
+      "id": 2,
+      "nombre": "Helado de Açaí",
+      "precio": 35.0,
+      "unidad": "copa especial",
+      "stock": 30,
+      "disponible": true,
+      "categoria": "especiales"
+    },
+    {
+      "id": 3,
+      "nombre": "Helado de Frutilla",
+      "precio": 25.0,
+      "unidad": "porción",
+      "stock": 12,
+      "disponible": true,
+      "categoria": "frutales"
+    },
+    {
+      "id": 4,
+      "nombre": "Helado de Coco",
+      "precio": 20.0,
+      "unidad": "porción",
+      "stock": 0,
+      "disponible": false,
+      "categoria": "frutales"
+    },
+    {
+      "id": 5,
+      "nombre": "Helado de Vainilla",
+      "precio": 10.0,
+      "unidad": "cono",
+      "stock": 20,
+      "disponible": true,
+      "categoria": "cremosos"
+    },
+    {
+      "id": 6,
+      "nombre": "Helado de Mango",
+      "precio": 15.0,
+      "unidad": "vaso",
+      "stock": 18,
+      "disponible": true,
+      "categoria": "frutales"
+    },
+    {
+      "id": 7,
+      "nombre": "Helado de Leche Condensada",
+      "precio": 25.0,
+      "unidad": "copa",
+      "stock": 15,
+      "disponible": true,
+      "categoria": "cremosos"
+    },
+    {
+      "id": 8,
+      "nombre": "Helado de Maracuyá",
+      "precio": 28.0,
+      "unidad": "copa",
+      "stock": 14,
+      "disponible": true,
+      "categoria": "frutales"
+    }
+  ]
+}
